@@ -1,9 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-import 'fcm_helper.dart';
-import 'firebase_options.dart';
+import 'helper/fcm_helper.dart';
+import 'fcm/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,9 +11,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FCMHelper().init();
-
-  debugPrint("token: ${await FirebaseMessaging.instance.getToken()}");
-
   runApp(const MyApp());
 }
 
