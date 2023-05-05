@@ -18,7 +18,7 @@ class FCMHelper {
   }
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   /*Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
@@ -40,11 +40,11 @@ class FCMHelper {
   // For show the notification when App is in FG.
   // Make sure you added proper name for icon. If it is not proper then notification will not come when app in Fg.
   static const AndroidNotificationDetails _androidNotificationDetails =
-  AndroidNotificationDetails(
+      AndroidNotificationDetails(
     '1',
     'FCM Push',
     channelDescription:
-    "This channel is responsible for all the local notifications",
+        "This channel is responsible for all the local notifications",
     ticker: 'ticker',
     icon: "mipmap/ic_launcher",
     playSound: true,
@@ -54,7 +54,7 @@ class FCMHelper {
   );
 
   static const DarwinNotificationDetails _iOSNotificationDetails =
-  DarwinNotificationDetails();
+      DarwinNotificationDetails();
 
   NotificationDetails notificationDetails = const NotificationDetails(
     android: _androidNotificationDetails,
@@ -63,7 +63,7 @@ class FCMHelper {
 
   // For handle notification click when app is in FG.
   static var initializationSettingsAndroid =
-  const AndroidInitializationSettings('mipmap/ic_launcher');
+      const AndroidInitializationSettings('mipmap/ic_launcher');
 
   static var initializationSettingsIOS = const DarwinInitializationSettings(
     requestSoundPermission: true,
@@ -154,9 +154,10 @@ class FCMHelper {
 
     debugPrint('showNotification completed');
 
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse: onTapNotification,
-        onDidReceiveBackgroundNotificationResponse: onTapNotification,
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onTapNotification,
+      onDidReceiveBackgroundNotificationResponse: onTapNotification,
     );
   }
 
