@@ -81,44 +81,61 @@ class FCMHelper {
 
     debugPrint("token: ${await FirebaseMessaging.instance.getToken()}");
 
-    // called when app is in FG and Push notification come
-    FirebaseMessaging.onMessage.listen((message) {
-      debugPrint("FirebaseMessaging.onMessage message: ${message.data}");
-      if (Platform.isAndroid) {
-        PushNotification pushNotification = PushNotification.fromJson(message);
-        debugPrint(
-            "FirebaseMessaging.onMessage pushNotification.data: ${pushNotification
-                .data}");
-        if (pushNotification.data != null) {
-          debugPrint('showNotification');
-          showNotification(pushNotification.data!, Random().nextInt(100));
-        } else {
-          debugPrint('pushNotification.data is NULL');
+    //To take the user's permissions
+    NotificationSettings notificationSettings =
+        await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (notificationSettings.authorizationStatus ==
+        AuthorizationStatus.authorized) {
+      debugPrint('User granted permission');
+
+      // called when app is in FG and Push notification come
+      FirebaseMessaging.onMessage.listen((message) {
+        debugPrint("FirebaseMessaging.onMessage message: ${message.data}");
+        if (Platform.isAndroid) {
+          PushNotification pushNotification =
+              PushNotification.fromJson(message);
+          debugPrint(
+              "FirebaseMessaging.onMessage pushNotification.data: ${pushNotification.data}");
+          if (pushNotification.data != null) {
+            debugPrint('showNotification');
+            showNotification(pushNotification.data!, Random().nextInt(100));
+          } else {
+            debugPrint('pushNotification.data is NULL');
+          }
         }
-      }
-    });
+      });
 
-    // called when a user presses a notification message and our app comes from BG to FG.
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      debugPrint(
-          "FirebaseMessaging.onMessageOpenedApp message: ${message.data}");
-      PushNotification pushNotification = PushNotification.fromJson(message);
-      if (pushNotification.data != null) {
-        takeAction(pushNotification.data?.dataRedirect);
-      }
-    });
-
-    // called when a user presses a notification message and our app comes from killed to FG
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      debugPrint("FirebaseMessaging.getInitialMessage: ${message?.data}");
-
-      if (message != null) {
+      // called when a user presses a notification message and our app comes from BG to FG.
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        debugPrint(
+            "FirebaseMessaging.onMessageOpenedApp message: ${message.data}");
         PushNotification pushNotification = PushNotification.fromJson(message);
         if (pushNotification.data != null) {
           takeAction(pushNotification.data?.dataRedirect);
         }
-      }
-    });
+      });
+
+      // called when a user presses a notification message and our app comes from killed to FG
+      FirebaseMessaging.instance.getInitialMessage().then((message) {
+        debugPrint("FirebaseMessaging.getInitialMessage: ${message?.data}");
+
+        if (message != null) {
+          PushNotification pushNotification =
+              PushNotification.fromJson(message);
+          if (pushNotification.data != null) {
+            takeAction(pushNotification.data?.dataRedirect);
+          }
+        }
+      });
+    } else {
+      debugPrint('User declined or has not accepted permission');
+    }
   }
 
   // For show the notification when App is in FG. In BG and Killed state no need to call.
