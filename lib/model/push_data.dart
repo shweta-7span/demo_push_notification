@@ -1,3 +1,4 @@
+// handles data payload from fcm
 class PushData {
   PushData({
     this.dataTitle,

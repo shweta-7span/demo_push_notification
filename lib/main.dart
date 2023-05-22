@@ -12,9 +12,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FCMHelper().init();
-
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   debugPrint("token: ${await FirebaseMessaging.instance.getToken()}");
-
   runApp(const MyApp());
 }
 
@@ -44,7 +43,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,4 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  //handle your custom notification
 }

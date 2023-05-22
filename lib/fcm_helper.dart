@@ -17,16 +17,13 @@ class FCMHelper {
     return _fcmHelper;
   }
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   // For show the notification when App is in FG.
-  static const AndroidNotificationDetails _androidNotificationDetails =
-  AndroidNotificationDetails(
+  static const AndroidNotificationDetails _androidNotificationDetails = AndroidNotificationDetails(
     '1',
     'FCM Push',
-    channelDescription:
-    "This channel is responsible for all the local notifications",
+    channelDescription: "This channel is responsible for all the local notifications",
     ticker: 'ticker',
     icon: "mipmap/ic_launcher",
     playSound: true,
@@ -35,8 +32,23 @@ class FCMHelper {
     importance: Importance.high,
   );
 
-  static const DarwinNotificationDetails _iOSNotificationDetails =
-  DarwinNotificationDetails();
+  NotificationDetails getGroupNotifier() {
+    InboxStyleInformation inboxStyleInformation = const InboxStyleInformation([], contentTitle: '', summaryText: 'messages');
+
+    AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails('1', 'Group',
+        channelDescription: 'Responsible for grouping',
+        styleInformation: inboxStyleInformation,
+        groupKey: 'Your key',
+        playSound: true,
+        setAsGroupSummary: true,
+        visibility: NotificationVisibility.public,
+        priority: Priority.high,
+        importance: Importance.high);
+
+    return NotificationDetails(android: androidNotificationDetails);
+  }
+
+  static const DarwinNotificationDetails _iOSNotificationDetails = DarwinNotificationDetails();
 
   NotificationDetails notificationDetails = const NotificationDetails(
     android: _androidNotificationDetails,
@@ -49,8 +61,7 @@ class FCMHelper {
       debugPrint("FirebaseMessaging.onMessage message: ${message.data}");
       if (Platform.isAndroid) {
         PushNotification pushNotification = PushNotification.fromJson(message);
-        debugPrint(
-            "FirebaseMessaging.onMessage pushNotification.data: ${pushNotification.data}");
+        debugPrint("FirebaseMessaging.onMessage pushNotification.data: ${pushNotification.data}");
         if (pushNotification.data != null) {
           debugPrint('showNotification');
           showNotification(pushNotification.data!, Random().nextInt(100));
@@ -61,18 +72,18 @@ class FCMHelper {
     });
   }
 
-  // For show the notification when App is in FG. In BG and Killed state no need to call.
-  // Firebase automatically show in those case.
+  // If the notification ids are the same, the function will group them.
   Future<void> showNotification(PushData pushNotificationData, int id) async {
     debugPrint('id: $id');
     debugPrint('dataTitle: ${pushNotificationData.dataTitle}');
     debugPrint('dataBody: ${pushNotificationData.dataBody}');
 
-    await flutterLocalNotificationsPlugin.show(
-        id,
-        pushNotificationData.dataTitle,
-        pushNotificationData.dataBody,
-        notificationDetails,
+    await flutterLocalNotificationsPlugin.show(id, pushNotificationData.dataTitle, pushNotificationData.dataBody, notificationDetails,
+        payload: pushNotificationData.dataRedirect);
+
+    NotificationDetails getGroupNotification = getGroupNotifier();
+
+    await flutterLocalNotificationsPlugin.show(0, pushNotificationData.dataTitle, pushNotificationData.dataBody, getGroupNotification,
         payload: pushNotificationData.dataRedirect);
 
     debugPrint('showNotification completed');

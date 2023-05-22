@@ -67,3 +67,15 @@ To get Firebase Server key, you need to follow these steps:
 - Click on the gear icon in the top left corner and select "Project settings".
 - In the "Project settings" page, click on the "Cloud Messaging" tab.
 - In the "Project credentials" section, locate the "Server key" and copy the value.
+
+## For Grouping Notification
+- Create a separate notification setting for grouping.
+- Your notification Id must be the same for all notifications that you want to group together.
+
+
+## For Terminate State
+- Call "FirebaseMessaging.onBackgroundMessage(your top level function)" in main method.
+- Annotate your top level function with "@pragma('vm:entry-point')".
+- Remove notification payload from your main payload.
+- You can now display your own notification along with the notification payload.
+
