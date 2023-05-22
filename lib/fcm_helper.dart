@@ -74,7 +74,6 @@ class FCMHelper {
 
   // If the notification ids are the same, the function will group them.
   Future<void> showNotification(PushData pushNotificationData, int id) async {
-    debugPrint('id: $id');
     debugPrint('dataTitle: ${pushNotificationData.dataTitle}');
     debugPrint('dataBody: ${pushNotificationData.dataBody}');
 
